@@ -27,14 +27,7 @@ function allFutureBoards(boards, move){
 
 // takes a single board and returns an array of all the possible boards after the next move
 function populate(boardState, move){
-  if (move === testMove) {
-    console.log("at the top of the tree");
-    boardState.cell = testMove; //set initial value of cell, will follow the board and all of its descendants throughout future populations
-    // must find a way to store emptySpaces[i] on each new board pushed into temp
-    // and then also store emptySpaces[i] at the top of the tree on each of its descendants
-    // adding to temp object will break flattenedAndUnique functionality
-    // might store each branch in its own array?
-  };
+ 
   var temp = [];
   var emptySpaces = [];
   var id = boardState.board.indexOf(null);
@@ -43,6 +36,8 @@ function populate(boardState, move){
     id = boardState.board.indexOf(null, id + 1);
   }
   for(var i = 0; i < emptySpaces.length; i++){ // emptySpaces[i] is the board's last move, but we actually need the number of the cell at the top of the "tree"
+    if (move === testMove) boardState.cell = emptySpaces[i]; 
+    
     var copy = boardState.board.slice(0, 9);
     if (move%2 === 0) copy[emptySpaces[i]]=1;
     else copy[emptySpaces[i]]=-1;
@@ -88,8 +83,7 @@ function flattenedAndUnique(array) {
   var hash = {}; 
   var unique = [];
   for(var i=0; i<allBoards.length; i++){
-    if(!hash.hasOwnProperty(allBoards[i])){ 
-      // debugger;
+    if(!hash.hasOwnProperty(allBoards[i].board)){ 
       hash[ allBoards[i] ] = true;
       unique.push(allBoards[i]);
     }
