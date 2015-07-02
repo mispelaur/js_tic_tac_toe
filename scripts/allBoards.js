@@ -11,6 +11,7 @@ var winningBoardStates = [];
 function allFutureBoards(boards, move){
   var newBoards = [];
   for(var i = 0; i < boards.length; i++){
+    // if (boards[i].board===undefined) debugger;
     if(gameHasWinner(boards[i].board, move)){
       newBoards.push(boards[i]);
     } else {
@@ -19,9 +20,11 @@ function allFutureBoards(boards, move){
   }
   move++
   if (move < 9){
-    newBoards.push(allFutureBoards(flattenedAndUnique(newBoards), move));
+    // newBoards.push(allFutureBoards(flattenedAndUnique(newBoards, move), move));
+    newBoards.push(allFutureBoards(_.flatten(newBoards), move));
   }
-  return flattenedAndUnique(newBoards);
+  // return flattenedAndUnique(newBoards, move);
+  return _.flatten(newBoards);
 }
 
 
@@ -41,6 +44,7 @@ function populate(boardState, move){
     var copy = boardState.board.slice(0, 9);
     if (move%2 === 0) copy[emptySpaces[i]]=1;
     else copy[emptySpaces[i]]=-1;
+    // if (copy===undefined) debugger;
     if (gameHasWinner(copy, move) && isNewWinningState(copy)){
 
       winningBoardStates.push({board: copy, cell: boardState.cell});
@@ -68,31 +72,37 @@ function isNewWinningState(board){
 
 
 // flatten, but only so much
-function flattenedAndUnique(array) {
-  var singleBoard = [];
-  var arrayOfBoards = [];
-  for (var i=0; i<array.length; i++){
-    // debugger;
-    if (array[0].length === undefined) { // if it's just a single board object rather than array of objects
-      singleBoard.push(array[i]);
-    } else arrayOfBoards.push(array[i]);
-  }
-  var tempflattened = [].concat.apply([], arrayOfBoards);
-  var allBoards = singleBoard.concat(tempflattened);
+// function flattenedAndUnique(array, move) _.flattenedAndUniquy, move) {
+  // if (move === 8) debugger;
+  // var singleBoard = [];
+  // var arrayOfBoards = [];
+  // for (var i=0; i<array.length; i++){
+  //   if (array[0].length === undefined) { // if it's just a single board object rather than array of objects
+  //     singleBoard.push(array[i]);
+  //   } else arrayOfBoards.push(array[i]);
+  // }
+  // var tempFlattened = [].concat.apply([], arrayOfBoards);
+  // var allBoards = singleBoard.concat(tempFlattened);
 
-  var hash = {}; 
-  var unique = [];
-  for(var i=0; i<allBoards.length; i++){
-    if(!hash.hasOwnProperty(allBoards[i].board)){ 
-      hash[ allBoards[i] ] = true;
-      unique.push(allBoards[i]);
-    }
-  }
-  return unique;
-}
+//   var allBoards = _.flatten(array);
+//   debugger;
+
+//   var hash = {}; 
+//   var unique = [];
+//   for(var i=0; i<allBoards.length; i++){
+//     if(!hash.hasOwnProperty(allBoards[i].board)){ 
+//       hash[ allBoards[i] ] = true;
+//       unique.push(allBoards[i]);
+//     }
+//   }
+//   debugger;
+//   return unique;
+// }
 
 
 function gameHasWinner(board, move) {
+  if (board===undefined) debugger;
+  
   var gameHasWinner = false;
   for(i=0; i < winningCombinations.length; i++){
     var combo = winningCombinations[i];
@@ -104,10 +114,10 @@ function gameHasWinner(board, move) {
 
 // var testBoard = [[ null, null, null, null, null, null, null, null, null ]];
 // var testMove = 0;
-var testBoard = [{board: [ -1, null, 1, 1, null, null, 1, -1, -1 ], cell: null}]; // returns all 5 potential win states
-var testMove = 6;
-var testingUniqueness = allFutureBoards(testBoard, testMove);
-console.log(testingUniqueness);
+// var testBoard = [{board: [ -1, null, 1, 1, null, null, 1, -1, -1 ], cell: null}]; // returns all 5 potential win states
+// var testMove = 6;
+// var testingUniqueness = allFutureBoards(testBoard, testMove);
+// console.log(testingUniqueness);
 
 
 

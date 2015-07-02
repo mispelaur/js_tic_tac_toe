@@ -2,25 +2,35 @@
 // will return a single object ranking each open cell by its potential to lead to the computer winning
 console.log("minimax linked");
 // testBoard with computer playing X (first/even)
-var testBoard = [[ -1, null, 1, 1, null, null, 1, -1, -1 ]]; // returns all 5 potential win states
-var testMove = 6;
+// var testBoard = [{board: [ -1, null, 1, 1, null, null, 1, -1, -1 ], cell: null}];// returns all 5 potential win states
+// var testMove = 6;
+var testBoard = [{board: [null,null,null,null,null,null,null,null,null], cell: null}];// returns all 5 potential win states
+var testMove = 0;
 
 var miniMaxCalculations = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0};
 
 
-// $(document).ready(function(){
-//   allFutureBoards(testBoard, testMove);
-//   console.log(winningBoardStates);
-//   for(var i=0; i<winningBoardStates.length; i++){
-//     console.log(winningBoardStates[i]);
-//     console.log(returnMoveNumber(winningBoardStates[i].board));
-//     // miniMax(winningBoardStates[i]);
-//   }  
-// });
+$(document).ready(function(){
+  allFutureBoards(testBoard, testMove);
+  // console.log(winningBoardStates);
+  for(var i=0; i<winningBoardStates.length; i++){
+    // console.log(winningBoardStates[i]);
+    // console.log(returnMoveNumber(winningBoardStates[i].board));
+    miniMax(winningBoardStates[i]);
+  }  
+  console.log(returnComputerMove(miniMaxCalculations, testMove));
+});
+
+function returnComputerMove(calculations, move){
+  var moveCell;
+  var ascendingCalculations = Object.keys(calculations).sort(function(a,b){return calculations[a]-calculations[b]})
+  if (move%2 === 0) moveCell = ascendingCalculations[0];
+  else return moveCell = ascendingCalculations[(ascendingCalculation.length - 1)];
+  return moveCell;
+}
 
 // every time it's the computer's move, this function must be called for EVERY potential WINNING board state
 function miniMax(board){
-  // debugger;
   var move = returnMoveNumber(board.board); // move needed to adjust for "depth"
   var miniMaxValue;
   for(i=0; i < this.winningCombinations.length; i++){
@@ -33,8 +43,7 @@ function miniMax(board){
     else miniMaxValue = 0;
       
   }
-  miniMaxCalculations[board.lastMoveCell] = miniMaxValue;
-  console.log(miniMaxCalculations);
+  miniMaxCalculations[board.cell] = miniMaxValue;
 }
 
 function returnMoveNumber(arr){
@@ -47,7 +56,7 @@ function returnMoveNumber(arr){
 }
 
 
-// Game.prototype.returnComputerMove = function(){
+// Game.prototype.returnComputerMove() = function(){
 //   console.log("computer move time");
 //   var allCells = [0, 1, 2, 3, 4, 5, 6, 7, 8];
 //   var cellsPlayed = Object.keys(this.board).map(Number);
