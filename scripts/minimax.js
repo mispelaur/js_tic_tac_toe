@@ -1,31 +1,40 @@
 // functions that will be called every time the computer moves
+// I AM MISSING GAMES THAT END IN DRAWS
 // will return a single object ranking each open cell by its potential to lead to the computer winning
 console.log("minimax linked");
-// testBoard with computer playing X (first/even)
-// var testBoard = [{board: [ -1, null, 1, 1, null, null, 1, -1, -1 ], cell: null}];// returns all 5 potential win states
-// var testMove = 6;
-var testBoard = [{board: [null,null,null,null,null,null,null,null,null], cell: null}];// returns all 5 potential win states
-var testMove = 0;
+// var testBoard = [{board: [ -1, null, 1, 1, null, null, 1, -1, -1 ], cell: null}], testMove=6; // should return cell 4
+
+// var testBoard = [{board: [null,1,null,null,null,1,-1,-1,1], cell: null}], testMove=5; // should return cell 2
+var testBoard = [{board: [1,1,-1,null,null,null,null,null,-1], cell: null}], testMove=4;
+
 
 var miniMaxCalculations = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0, 6:0, 7:0, 8:0};
 
 
+
 $(document).ready(function(){
+
   allFutureBoards(testBoard, testMove);
+  for(var i=0; i < winningBoardStates.length; i++){
+    winningBoardStates[i].move=returnMoveNumber(winningBoardStates[i].board);
+  }
+  var pruned = prune(winningBoardStates);
   // console.log(winningBoardStates);
-  for(var i=0; i<winningBoardStates.length; i++){
-    // console.log(winningBoardStates[i]);
-    // console.log(returnMoveNumber(winningBoardStates[i].board));
-    miniMax(winningBoardStates[i]);
+  // for(var i=0; i<winningBoardStates.length; i++){
+  //   miniMax(winningBoardStates[i]);
+  // }  
+  for(var i=0; i<pruned.length; i++){
+    miniMax(pruned[i]);
   }  
   console.log(returnComputerMove(miniMaxCalculations, testMove));
+  debugger;
 });
 
 function returnComputerMove(calculations, move){
   var moveCell;
-  var ascendingCalculations = Object.keys(calculations).sort(function(a,b){return calculations[a]-calculations[b]})
+  var ascendingCalculations = Object.keys(calculations).sort(function(a,b){return calculations[a]-calculations[b]});
   if (move%2 === 0) moveCell = ascendingCalculations[0];
-  else return moveCell = ascendingCalculations[(ascendingCalculation.length - 1)];
+  else return moveCell = ascendingCalculations[(ascendingCalculations.length - 1)];
   return moveCell;
 }
 
@@ -41,9 +50,11 @@ function miniMax(board){
     if(sum === 3) miniMaxValue = move-10
     else if (sum === -3) miniMaxValue = 10-move
     else miniMaxValue = 0;
-      
+    
+    miniMaxCalculations[board.cell] = miniMaxCalculations[board.cell] + miniMaxValue;
+
   }
-  miniMaxCalculations[board.cell] = miniMaxValue;
+  return miniMaxCalculations;
 }
 
 function returnMoveNumber(arr){
@@ -54,6 +65,41 @@ function returnMoveNumber(arr){
   }
   return count;
 }
+  var cellArray = [], moveArray = [];
+
+function prune(winningBoardStates){
+  for(var i=0; i<winningBoardStates.length; i++){
+    var localCell = winningBoardStates[i].cell;
+    // var localMove = winningBoardStates[i].move;
+    if(cellArray.indexOf(localCell) === -1) cellArray.push(localCell);
+    // if(moveArray.indexOf(localMove) === -1) moveArray.push(localMove);
+  }  
+
+  // look at each winning boardState with a particular "cell" and remove all but the one with the smallest "move"
+  // cellArray = [0, 3, 4, 2];
+  var pruned = winningBoardStates;
+  for(var i=0; i<cellArray.length; i++){
+    // collect all indices of winningBoardStates with given cell
+    var haveSameCell = [];
+    var id = winningBoardStates.map(function(state){return state.cell;}).indexOf(cellArray[i], 0);
+    while(id !== -1){
+      haveSameCell.push(winningBoardStates[id]);
+      id = winningBoardStates.map(function(state){return state.cell;}).indexOf(cellArray[i], id+1);
+    }
+
+    // find value of smallest move with given cell 
+    var minMove = Math.min.apply(null, haveSameCell.map(function(state){return state.move}));
+
+    // look at all the winningBoardStates and remove those with given cell but not minMove
+    var pruned = pruned.filter(function(state){
+      if(state.cell === cellArray[i] && state.move > minMove) return false;
+      else return true;
+    });
+  }
+  return pruned;
+}
+
+prune(winningBoardStates);
 
 
 // Game.prototype.returnComputerMove() = function(){
