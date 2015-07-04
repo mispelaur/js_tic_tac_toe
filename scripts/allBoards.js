@@ -13,7 +13,8 @@ function allFutureBoards(boards, move){
   for(var i = 0; i < boards.length; i++){
     // if (boards[i].board===undefined) debugger;
     if(gameHasWinner(boards[i].board, move)){
-      newBoards.push(boards[i]);
+      // newBoards.push(boards[i]);
+      winningBoardStates.push(boards[i]);
     } else {
       newBoards.push(populate(boards[i], move));
     }
@@ -44,12 +45,12 @@ function populate(boardState, move){
     var copy = boardState.board.slice(0, 9);
     if (move%2 === 0) copy[emptySpaces[i]]=1;
     else copy[emptySpaces[i]]=-1;
-    // if (copy===undefined) debugger;
-    if (gameHasWinner(copy, move) && isNewWinningState(copy)){
 
-      winningBoardStates.push({board: copy, cell: boardState.cell});
+    // if (gameHasWinner(copy, move) && isNewWinningState(copy)){
 
-    }
+    //   winningBoardStates.push({board: copy, cell: boardState.cell});
+
+    // }
     temp.push({board: copy, cell: boardState.cell});
   }
   return temp;
