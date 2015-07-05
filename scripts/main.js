@@ -1,14 +1,18 @@
 console.log("main linked");
 
 function Game(hasComputerPlayer, computerPlaysFirst){
-  this.board = [];
+  this.board = [null, null, null, null, null, null, null, null, null];
   this.hasComputerPlayer = hasComputerPlayer;
   this.computerPlaysFirst = computerPlaysFirst; //computer plays odd
   this.moveNumber = 0;
   this.boardState = $('.board').attr('id');
   this.noWinner = true;
-  this.hasComputerPlayer = hasComputerPlayer;
+  // this.hasComputerPlayer = hasComputerPlayer;
   this.winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+  this.AIBoard = [];
+  this.miniMaxCalculations = {};
+  this.futureBoards = [];
+  this.futureWinStates = [];
 }
 
 Game.prototype.eventListeners = function(){
@@ -60,5 +64,5 @@ Game.prototype.timeForComputerMove = function(){
   }
 }
 
-var currentGame = new Game(false, false); //Game(hasComputerPlayer, computerPlaysFirst)
+var currentGame = new Game(true, false); //Game(hasComputerPlayer, computerPlaysFirst)
 currentGame.eventListeners();
