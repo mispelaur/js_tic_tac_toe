@@ -1,5 +1,3 @@
-console.log("main linked");
-
 function Game(hasComputerPlayer, computerPlaysFirst){
   this.board = [null, null, null, null, null, null, null, null, null];
   this.hasComputerPlayer = hasComputerPlayer;
@@ -50,8 +48,8 @@ Game.prototype.checkForWinner = function(){
       this.boardState = "inactive";
     }
   }
-  if (this.noWinner === false) this.boardState = "inactive";
-  if (this.noWinner && this.moveNumber === 8) console.log("tie");
+  if(this.noWinner === false) this.boardState = "inactive";
+  if(this.noWinner && this.moveNumber === 8) console.log("DRAW!");
 }
 
 Game.prototype.timeForComputerMove = function(){
