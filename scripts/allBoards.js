@@ -9,67 +9,77 @@ var winningBoardStates = [];
 
 // take initial board state and return all potential future boards
 function allFutureBoards(boards, move){
+  // if (move === 8) debugger;
   var newBoards = [];
   for(var i = 0; i < boards.length; i++){
-    // if (boards[i].board===undefined) debugger;
     if(gameHasWinner(boards[i].board, move)){
-      // newBoards.push(boards[i]);
       winningBoardStates.push(boards[i]);
     } else {
       newBoards.push(populate(boards[i], move));
     }
   }
   move++
+
   if (move < 9){
-    // newBoards.push(allFutureBoards(flattenedAndUnique(newBoards, move), move));
     newBoards.push(allFutureBoards(_.flatten(newBoards), move));
+  } else if (move === 9){
+    var test = _.flatten(newBoards);
+    for(var i = 0; i < test.length; i++){
+        if(gameHasWinner(test[i].board, 9)){
+          winningBoardStates.push(test[i]);
+      }
+    }
   }
-  // return flattenedAndUnique(newBoards, move);
   return _.flatten(newBoards);
 }
 
-
 // takes a single board and returns an array of all the possible boards after the next move
 function populate(boardState, move){
- 
   var temp = [];
   var emptySpaces = [];
+
   var id = boardState.board.indexOf(null);
   while (id != -1) {
     emptySpaces.push(id);
     id = boardState.board.indexOf(null, id + 1);
   }
-  for(var i = 0; i < emptySpaces.length; i++){ // emptySpaces[i] is the board's last move, but we actually need the number of the cell at the top of the "tree"
+
+  for(var i = 0; i < emptySpaces.length; i++){ 
     if (move === testMove) boardState.cell = emptySpaces[i]; 
-    
     var copy = boardState.board.slice(0, 9);
     if (move%2 === 0) copy[emptySpaces[i]]=1;
     else copy[emptySpaces[i]]=-1;
-
-    // if (gameHasWinner(copy, move) && isNewWinningState(copy)){
-
-    //   winningBoardStates.push({board: copy, cell: boardState.cell});
-
-    // }
     temp.push({board: copy, cell: boardState.cell});
   }
+
   return temp;
 }
 
-// avoid hard-coding 9
-function isNewWinningState(board){
-  var isUnique = true;
-  for (var i=0; i<winningBoardStates.length; i++){
-    var count = 0;
-    for(var j=0; j<9; j++){
-      if(winningBoardStates[i].board[j] === board[j]) {
-        count++;
-        if(count === 9) isUnique = false;
-      }
-    } 
+function gameHasWinner(board, move) {
+  var gameHasWinner = false;
+  // var move = returnMoveNumber(board);
+  for(i=0; i < winningCombinations.length; i++){
+    var combo = winningCombinations[i];
+    var sum = board[combo[0]] + board[combo[1]] + board[combo[2]];
+    if(Math.abs(sum) === 3 ) gameHasWinner = true;
   }
-  return isUnique;
+  return gameHasWinner;
 }
+
+// avoid hard-coding 9
+// function isNewWinningState(board){
+//   var isUnique = true;
+//   for (var i=0; i<winningBoardStates.length; i++){
+//     var count = 0;
+//     for(var j=0; j<9; j++){
+//       if(winningBoardStates[i].board[j] === board[j]) {
+//         count++;
+//         if(count === 9) isUnique = false;
+//       }
+//     } 
+//   }
+//   return isUnique;
+// }
 
 
 // flatten, but only so much
@@ -101,17 +111,7 @@ function isNewWinningState(board){
 // }
 
 
-function gameHasWinner(board, move) {
-  if (board===undefined) debugger;
-  
-  var gameHasWinner = false;
-  for(i=0; i < winningCombinations.length; i++){
-    var combo = winningCombinations[i];
-    var sum = board[combo[0]] + board[combo[1]] + board[combo[2]];
-    if(Math.abs(sum) === 3 ) gameHasWinner = true;
-  }
-  return gameHasWinner;
-}
+
 
 // var testBoard = [[ null, null, null, null, null, null, null, null, null ]];
 // var testMove = 0;
