@@ -46,8 +46,8 @@ Game.prototype.checkForWinner = function(){
       this.boardState = "inactive";
     }
   }
-  if (this.noWinner === false) this.boardState = "inactive";
-  if (this.noWinner && this.moveNumber === 8) console.log("tie");
+  if(this.noWinner === false) this.boardState = "inactive";
+  if(this.noWinner && this.moveNumber === 8) console.log("tie");
 }
 
 Game.prototype.timeForComputerMove = function(){

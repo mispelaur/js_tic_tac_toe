@@ -1,6 +1,4 @@
-// functions needed to return all potential future board states
-// I only need to return every future win state
-// BUT each board needs an associated move at the top of its "tree"
+// functions needed to return all potential future win states
 console.log("allBoards linked");
 
 var winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
@@ -11,12 +9,12 @@ function allFutureBoards(boards, move){
   for(var i = 0; i < boards.length; i++){
     if(gameHasWinner(boards[i].board, move)){
       winningBoardStates.push(boards[i]);
-    } else {
+    }else{
       newBoards.push(populate(boards[i], move));
     }
   }
   move++
-  if (move < 10){
+  if(move < 10){
     newBoards.push(allFutureBoards(_.flatten(newBoards), move));
   } 
   return winningBoardStates;
@@ -27,11 +25,13 @@ function populate(boardState, move){
   var temp = [];
   var emptySpaces = returnEmptySpaces(boardState.board);
   for(var i = 0; i < emptySpaces.length; i++){ 
+
     if (move === testMove) boardState.cell = emptySpaces[i]; 
     var copy = boardState.board.slice(0, 9);
     if (move%2 === 0) copy[emptySpaces[i]]=1;
     else copy[emptySpaces[i]]=-1;
-    temp.push({board: copy, cell: boardState.cell, move: move});
+    temp.push({board: copy, cell: boardState.cell, move: move+1});
+
   }
   return temp;
 }
@@ -39,7 +39,7 @@ function populate(boardState, move){
 function returnEmptySpaces(board){
   var emptySpaces = [];
   var id = board.indexOf(null);
-  while (id != -1) {
+  while(id != -1){
     emptySpaces.push(id);
     id = board.indexOf(null, id + 1);
   }
