@@ -6,10 +6,7 @@ console.log("allBoards linked");
 var winningCombinations = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
 var winningBoardStates = [];
 
-
-// take initial board state and return all potential future boards
 function allFutureBoards(boards, move){
-  // if (move === 8) debugger;
   var newBoards = [];
   for(var i = 0; i < boards.length; i++){
     if(gameHasWinner(boards[i].board, move)){
@@ -19,45 +16,38 @@ function allFutureBoards(boards, move){
     }
   }
   move++
-
-  if (move < 9){
+  if (move < 10){
     newBoards.push(allFutureBoards(_.flatten(newBoards), move));
-  } else if (move === 9){
-    var test = _.flatten(newBoards);
-    for(var i = 0; i < test.length; i++){
-        if(gameHasWinner(test[i].board, 9)){
-          winningBoardStates.push(test[i]);
-      }
-    }
-  }
-  return _.flatten(newBoards);
+  } 
+  return winningBoardStates;
 }
 
 // takes a single board and returns an array of all the possible boards after the next move
 function populate(boardState, move){
   var temp = [];
-  var emptySpaces = [];
-
-  var id = boardState.board.indexOf(null);
-  while (id != -1) {
-    emptySpaces.push(id);
-    id = boardState.board.indexOf(null, id + 1);
-  }
-
+  var emptySpaces = returnEmptySpaces(boardState.board);
   for(var i = 0; i < emptySpaces.length; i++){ 
     if (move === testMove) boardState.cell = emptySpaces[i]; 
     var copy = boardState.board.slice(0, 9);
     if (move%2 === 0) copy[emptySpaces[i]]=1;
     else copy[emptySpaces[i]]=-1;
-    temp.push({board: copy, cell: boardState.cell});
+    temp.push({board: copy, cell: boardState.cell, move: move});
   }
-
   return temp;
+}
+
+function returnEmptySpaces(board){
+  var emptySpaces = [];
+  var id = board.indexOf(null);
+  while (id != -1) {
+    emptySpaces.push(id);
+    id = board.indexOf(null, id + 1);
+  }
+  return emptySpaces;
 }
 
 function gameHasWinner(board, move) {
   var gameHasWinner = false;
-  // var move = returnMoveNumber(board);
   for(i=0; i < winningCombinations.length; i++){
     var combo = winningCombinations[i];
     var sum = board[combo[0]] + board[combo[1]] + board[combo[2]];
@@ -65,61 +55,3 @@ function gameHasWinner(board, move) {
   }
   return gameHasWinner;
 }
-
-// avoid hard-coding 9
-// function isNewWinningState(board){
-//   var isUnique = true;
-//   for (var i=0; i<winningBoardStates.length; i++){
-//     var count = 0;
-//     for(var j=0; j<9; j++){
-//       if(winningBoardStates[i].board[j] === board[j]) {
-//         count++;
-//         if(count === 9) isUnique = false;
-//       }
-//     } 
-//   }
-//   return isUnique;
-// }
-
-
-// flatten, but only so much
-// function flattenedAndUnique(array, move) _.flattenedAndUniquy, move) {
-  // if (move === 8) debugger;
-  // var singleBoard = [];
-  // var arrayOfBoards = [];
-  // for (var i=0; i<array.length; i++){
-  //   if (array[0].length === undefined) { // if it's just a single board object rather than array of objects
-  //     singleBoard.push(array[i]);
-  //   } else arrayOfBoards.push(array[i]);
-  // }
-  // var tempFlattened = [].concat.apply([], arrayOfBoards);
-  // var allBoards = singleBoard.concat(tempFlattened);
-
-//   var allBoards = _.flatten(array);
-//   debugger;
-
-//   var hash = {}; 
-//   var unique = [];
-//   for(var i=0; i<allBoards.length; i++){
-//     if(!hash.hasOwnProperty(allBoards[i].board)){ 
-//       hash[ allBoards[i] ] = true;
-//       unique.push(allBoards[i]);
-//     }
-//   }
-//   debugger;
-//   return unique;
-// }
-
-
-
-
-// var testBoard = [[ null, null, null, null, null, null, null, null, null ]];
-// var testMove = 0;
-// var testBoard = [{board: [ -1, null, 1, 1, null, null, 1, -1, -1 ], cell: null}]; // returns all 5 potential win states
-// var testMove = 6;
-// var testingUniqueness = allFutureBoards(testBoard, testMove);
-// console.log(testingUniqueness);
-
-
-
-
